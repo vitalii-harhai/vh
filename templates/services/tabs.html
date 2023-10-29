@@ -1,0 +1,127 @@
+{% extends "index.html" %}
+{% load static %}
+
+
+{% block scripts %}
+    <script src="{% static 'js/calculator_js.js' %}"></script>
+{% endblock scripts %}
+
+
+{% block content %}
+<h5>Калькулятор днів</h5>
+<div id="content">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link{{ before_tab.nav_link }}" id="before-tab"
+                data-bs-toggle="tab" data-bs-target="#before-tab-pane" type="button" role="tab"
+                aria-controls="before-tab-pane" aria-selected="{{ before_tab.aria_selected }}">Дата до</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link{{ between_tab.nav_link }}" id="between-tab"
+                data-bs-toggle="tab" data-bs-target="#between-tab-pane" type="button" role="tab"
+                aria-controls="between-tab-pane" aria-selected="{{ between_tab.aria_selected }}">Дата поміж</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link{{ after_tab.nav_link }}" id="after-tab"
+                data-bs-toggle="tab" data-bs-target="#after-tab-pane" type="button" role="tab"
+                aria-controls="after-tab-pane" aria-selected="{{ after_tab }}">Дата після</button>
+        </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <!-- BEFORE -->
+        <div class="tab-pane fade{{ before_tab.tab_pane_fade }}" id="before-tab-pane" role="tabpanel" aria-labelledby="before-tab" tabindex="0">
+            <p>Калькулятор обчислює кількість календарних та робочих днів до початкової дати
+            (кінцева дата в рахунок не входить)</p>
+            <p>Календар робочих днів заповнений за 2023 рік</p>
+            <form>
+                <p><input type='date' id="before_date" value='{{ before_date }}'>
+                    Кінцева дата</p>
+                <p><input type='text' size="15" id="before_calendar_days"
+                      {% if before_calendar_days %}
+                          value='{{ before_calendar_days }}'
+                      {% else %}
+                          value=''
+                      {% endif %}
+                > Календарні дні</p>
+                <p><input type='text' size="15" id="before_bank_days"
+                      {% if before_bank_days %}
+                          value='{{ before_bank_days }}'
+                      {% else %}
+                          value=''
+                      {% endif %}
+                > Робочі дні</p>
+                <p><input type='button' onclick='tab_js()' value="Розрахувати"></p>
+            </form>
+            <a class="btn btn-light" data-bs-toggle="collapse" href="#before-example" role="button" aria-expanded="false"
+                aria-controls="before-example"> Приклади використання
+            </a>
+            <div class="collapse" id="before-example">
+                <div class="card card-body">
+                    1) Працівник йде у відпустку 26.06.2023, відповідно до законодавства його потрібно повідомити
+                    про відпустку за 14 календарних днів. 14-й календарний день - це понеділок 12.06.2023, тобто його
+                    потрібно повідомити про відпустку в попередній робочий день, тобто в пʼятницю 09.06.2023
+                    (поле 'Дата' - 25.06.2023, поле 'Календарні дні' - 14, поле 'Робочі дні' - залишаємо порожнім)
+                </div>
+            </div>
+            {% if before_message %}
+            <div class="card card-body">{{ before_message }}</div>
+            {% endif %}
+        </div>
+        <!-- BETWEEN -->
+        <div class="tab-pane fade{{ between_tab.tab_pane_fade }}" id="between-tab-pane" role="tabpanel" aria-labelledby="between-tab" tabindex="0">
+            <p>Калькулятор обчислює кількість повних календарних та банківських днів між датами початку та кінця
+                (початкова дата та кінцева дата в рахунок не входять)</p>
+            <p>Календар банківських днів не заповнений</p>
+            <form>
+                <p><input type='date' id="between_start_date" value='{{ between_start_date }}'>
+                    Початкова дата</p>
+                <p><input type='date' id="between_end_date" value='{{ between_end_date }}'>
+                    Кінцева дата</p>
+                <p><input type='button' onclick='tab_js()' value="Розрахувати"></p>
+            </form>
+            {% if between_message %}
+            <div class="card card-body">{{ between_message }}</div>
+            {% endif %}
+        </div>
+        <!-- AFTER -->
+        <div class="tab-pane fade{{ after_tab.tab_pane_fade }}" id="after-tab-pane" role="tabpanel" aria-labelledby="after-tab" tabindex="0">
+            <p>Калькулятор обчислює кількість календарних та робочих днів від початкової дати
+            (дата початку в рахунок не входить)</p>
+            <p>Календар робочих днів заповнений за 2023 рік</p>
+            <form>
+                <p><input type='date' id="after_date" value='{{ after_date }}'>
+                    Дата початку</p>
+                <p><input type='text' size="15" id="after_calendar_days"
+                      {% if after_calendar_days %}
+                          value='{{ after_calendar_days }}'
+                      {% else %}
+                          value=''
+                      {% endif %}
+                > Календарні дні</p>
+                <p><input type='text' size="15" id="after_bank_days"
+                      {% if after_bank_days %}
+                          value='{{ after_bank_days }}'
+                      {% else %}
+                          value=''
+                      {% endif %}
+                > Робочі дні</p>
+                <p><input type='button' onclick='tab_js()' value="Розрахувати"></p>
+            </form>
+            <a class="btn btn-light" data-bs-toggle="collapse" href="#after-example" role="button" aria-expanded="false"
+                aria-controls="after-example"> Приклади використання
+            </a>
+            <div class="collapse" id="after-example">
+                <div class="card card-body">
+                    1) Товар відвантажений 05.06.2023. Оплата за товар надійде згідно з контрактом протягом 5 робочих днів
+                    через 10 календарних днів після відвантаження. Кінцевий строк очікування оплати - четвер 22.06.2023
+                    (поле 'Дата' - 05.06.2023, поле 'Календарні дні' - 10, поле 'Робочі' - 5)
+                </div>
+            </div>
+            {% if after_message %}
+            <div class="card card-body">{{ after_message }}</div>
+            {% endif %}
+            <br>
+        </div>
+    </div>
+</div>
+{% endblock content %}

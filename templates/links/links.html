@@ -1,0 +1,27 @@
+{% extends "index.html" %}
+{% block content %}
+    {% for catalog in catalogs %}
+    <div class="accordion accordion-flush" id="accordionFlushExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="flush-heading{{ catalog.id }}">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse{{ catalog.id }}" aria-expanded="false" aria-controls="flush-collapse{{ catalog.id }}">
+                        {{ catalog }}
+                </button>
+            </h2>
+        </div>
+        <div id="flush-collapse{{ catalog.id }}" class="accordion-collapse collapse" aria-labelledby="flush-heading{{ catalog.id }}" data-bs-parent="#accordionFlushExample">
+            <div class="accordion-body">
+                <ul class="list-group">
+                    {% for link in links %}
+                        {% if link.catalog|lower == catalog.name|lower %}
+                            <li class="list-group-item">
+                                <a class="text-decoration-none" href="{{ link.link }}" target="_blank">{{ link.name }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+{% endblock content %}
